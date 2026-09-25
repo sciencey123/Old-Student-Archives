@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Old Student Archives</title>
+<style>
+:root{
+  --bg:#f6f4ef; --card:#ffffff; --ink:#1f2a1f; --sub:#5a6b58;
+  --green:#2e6b3e; --green-dark:#1f4d2b; --leaf:#8bbf6c; --line:#e2ddd1;
+  --accent:#d98e34;
+  box-sizing:border-box;
+}
+*{box-sizing:border-box;}
+html,body{margin:0; height:100%;}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+header{
+  position:sticky; top:0; z-index:10;
+  padding:14px 20px; background:var(--green-dark); color:#fff;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
+}
+.brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:1.05rem;}
+.brand-mark{width:28px; height:28px; flex-shrink:0;}
+nav{display:flex; gap:6px; flex-wrap:wrap;}
+nav button{
+  background:transparent; border:1px solid rgba(255,255,255,.35); color:#fff;
+  padding:7px 14px; border-radius:999px; font-size:.85rem; cursor:pointer;
+}
+nav button.active{background:#fff; color:var(--green-dark); border-color:#fff; font-weight:600;}
+main{max-width:840px; margin:0 auto; padding:24px 18px 60px;}
+.page{display:none;}
+.page.active{display:block;}
+.hero{
+  background:linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+  color:#fff; border-radius:18px; padding:28px 22px; margin-bottom:20px;
+}
+.hero h1{margin:0 0 8px; font-size:1.6rem;}
+.hero p{margin:0; opacity:.95; line-height:1.5; font-size:.96rem;}
+.stat-row{display:flex; gap:12px; margin-top:18px; flex-wrap:wrap;}
+.stat{background:rgba(255,255,255,.15); border-radius:12px; padding:10px 14px; font-size:.85rem;}
+.stat b{display:block; font-size:1.1rem;}
+.card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; margin-bottom:14px;}
+.card h3{margin:0 0 6px; font-size:1.02rem;}
+.card p{margin:0; color:var(--sub); font-size:.92rem; line-height:1.5;}
+.steps{display:grid; gap:12px; grid-template-columns:repeat(3,1fr); margin-top:14px;}
+@media (max-width:640px){.steps{grid-template-columns:1fr;}}
+.step{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px;}
+.step .n{width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; margin-bottom:8px;}
+.cta{display:flex; gap:10px; margin-top:18px; flex-wrap:wrap;}
+button.primary{background:var(--accent); color:#2b1a05; border:none; padding:11px 18px; border-radius:10px; font-weight:700; cursor:pointer; font-size:.92rem;}
+button.secondary{background:transparent; border:1px solid var(--line); color:var(--ink); padding:11px 18px; border-radius:10px; cursor:pointer; font-size:.92rem;}
+.search-bar{display:flex; gap:8px; margin-bottom:10px;}
+.search-bar input{flex:1; padding:11px 14px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--ink); font-size:.95rem;}
+.filter-row{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;}
+.filter-row select{padding:9px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--ink); font-size:.85rem;}
+.note-card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;}
+.note-meta b{display:block; font-size:.98rem; margin:4px 0 2px;}
+.note-meta span{color:var(--sub); font-size:.82rem;}
+.tag{display:inline-block; background:rgba(46,107,62,.12); color:var(--green); border-radius:999px; padding:2px 10px; font-size:.75rem; margin-right:6px;}
+.tag.alt{background:rgba(217,142,52,.15); color:var(--accent);}
+a.dl, button.dl{color:var(--green); text-decoration:none; font-weight:600; font-size:.88rem; white-space:nowrap; background:none; border:none; cursor:pointer; font-family:inherit;}
+form{display:flex; flex-direction:column; gap:12px;}
+label{font-size:.85rem; color:var(--sub); font-weight:600;}
+input[type=text], select.form-select{padding:11px 12px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--ink); font-size:.95rem; width:100%;}
+input[type=file]{padding:10px; border:1px dashed var(--line); border-radius:10px; background:var(--card); color:var(--ink); font-size:.85rem;}
+.msg{padding:11px 14px; border-radius:10px; font-size:.88rem; margin-top:6px;}
+.msg.ok{background:rgba(46,107,62,.12); color:var(--green);}
+.msg.err{background:rgba(200,60,60,.12); color:#c33c3c;}
+.empty{color:var(--sub); font-size:.9rem; text-align:center; padding:30px 0;}
+.note{color:var(--sub); font-size:.82rem; margin-top:14px; line-height:1.5;}
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+@media (max-width:560px){.two-col{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 2C7 4 4 8 4 13c0 4 3.5 7 8 9 4.5-2 8-5 8-9 0-5-3-9-8-11Z" fill="#8bbf6c"/><path d="M12 8v9M12 8c-1.5 0-3 1-3.2 2.6M12 12c1.6-.2 2.8-1.2 3-2.6" stroke="#1f4d2b" stroke-width="1.2" stroke-linecap="round"/></svg>
+    Old Student Archives
+  </div>
+  <nav>
+    <button data-page="home" class="active">About</button>
+    <button data-page="search">Search Notes</button>
+    <button data-page="contact">Contact / Upload</button>
+  </nav>
+</header>
+
+<main>
+  <section id="home" class="page active">
+    <div class="hero">
+      <div style="display:inline-block; background:rgba(255,255,255,.22); border:1px solid rgba(255,255,255,.4); padding:6px 14px; border-radius:999px; font-size:.85rem; font-weight:700; letter-spacing:.02em; margin-bottom:12px;">
+        ♻️ ONE NOTEBOOK, TWO OUTCOMES
+      </div>
+      <h1>Turning old notebooks into shared knowledge</h1>
+      <p>Old Student Archives collects handwritten notes from students' previous years' rough notebooks, scans them into searchable PDFs, and then responsibly recycles the physical notebooks — so the knowledge lives on and the paper doesn't go to waste.</p>
+      <div class="stat-row">
+        <div class="stat"><b id="recycledCount">—</b>notebooks recycled so far</div>
+        <div class="stat"><b>♻︎</b>paper recycled after scanning</div>
+        <div class="stat"><b>📚</b>notes searchable by class, subject &amp; chapter</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Why this exists</h3>
+      <p>Every year, thousands of rough notebooks, full of diagrams, worked examples and last-minute exam notes, end up thrown away once a student moves on. That's lost learning material and wasted paper at the same time. We fix both problems at once: the notes get digitized and made searchable for future students, and the physical notebook is recycled instead of binned.</p>
+    </div>
+
+    <h3 style="margin-top:26px;">How it works</h3>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><b>You reach out</b><p style="margin-top:6px;color:var(--sub);font-size:.88rem;">Use the Contact page to tell us about the notebook you want to hand over.</p></div>
+      <div class="step"><div class="n">2</div><b>We scan it</b><p style="margin-top:6px;color:var(--sub);font-size:.88rem;">The notebook is scanned into a PDF and tagged by class, subject and chapter.</p></div>
+      <div class="step"><div class="n">3</div><b>It's archived &amp; recycled</b><p style="margin-top:6px;color:var(--sub);font-size:.88rem;">The PDF joins the searchable archive; the paper notebook is recycled.</p></div>
+    </div>
+
+    <div class="cta">
+      <button class="primary" data-page="contact">Hand over a notebook</button>
+      <button class="secondary" data-page="search">Browse existing notes</button>
+    </div>
+  </section>
+
+  <section id="search" class="page">
+    <h2 style="margin-top:0;">Search notes</h2>
+    <p style="color:var(--sub); margin-top:-6px;">Look up notes by class, subject, chapter, or topic — all uploaded by students.</p>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search by keyword...">
+    </div>
+    <div class="filter-row">
+      <select id="filterClass" class="form-select" style="width:auto;"><option value="">All classes</option></select>
+      <select id="filterSubject" class="form-select" style="width:auto;"><option value="">All subjects</option></select>
+    </div>
+    <div id="searchResults"></div>
+  </section>
+
+  <section id="contact" class="page">
+    <h2 style="margin-top:0;">Contact us / Upload a notebook's notes</h2>
+    <p style="color:var(--sub); margin-top:-6px;">Fill this in once you've scanned your notebook — we'll add it to the archive and recycle the paper.</p>
+
+    <div class="card" style="margin-bottom:18px;">
+      <h3 style="margin-top:0;">Want to hand over a notebook?</h3>
+      <p>Reach out to us directly and we'll arrange to collect it or help you scan it:</p>
+      <p style="margin-top:10px; font-size:.95rem;">
+        📞 <a href="tel:+917869209999" style="color:var(--green); font-weight:600; text-decoration:none;">7869209999</a><br>
+        ✉️ <a href="mailto:youthnexus111@gmail.com" style="color:var(--green); font-weight:600; text-decoration:none;">youthnexus111@gmail.com</a>
+      </p>
+    </div>
+
+    <form id="uploadForm">
+      <div>
+        <label>Your name</label>
+        <input type="text" id="fName" placeholder="Full name" required>
+      </div>
+      <div class="two-col">
+        <div>
+          <label>Class / Grade</label>
+          <input type="text" id="fClass" placeholder="e.g. Class 10 / Grade 12 / B.Tech Year 2" required>
+        </div>
+        <div>
+          <label>Subject</label>
+          <input type="text" id="fSubject" placeholder="e.g. Physics" required>
+        </div>
+      </div>
+      <div>
+        <label>Chapter / Topic</label>
+        <input type="text" id="fChapter" placeholder="e.g. Chapter 6 - Waves" required>
+      </div>
+      <div>
+        <label>PDF of your notes</label>
+        <input type="file" id="fFile" accept="application/pdf" required>
+      </div>
+      <button type="submit" class="primary">Submit notes</button>
+      <div id="formMsg"></div>
+    </form>
+    <p class="note">Once your PDF is confirmed, the physical notebook is no longer needed for the archive — please bring or send it to us so it can be recycled responsibly instead of thrown away.<br><br>
+    Notes uploaded here are stored in a shared Supabase database and storage bucket, so anyone visiting this page — on any device — can search and find them.</p>
+  </section>
+</main>
+
+<!-- ====== SUPABASE SETUP ======
+Paste your Project URL and anon public key below.
+(Supabase dashboard → Project Settings → API)
+============================== -->
+<script>
+window.SUPABASE_URL = "https://pyxpdcpukvizmniqumuv.supabase.co";
+window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5eHBkY3B1a3Zpem1uaXF1bXV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyNjA5ODIsImV4cCI6MjEwNTgzNjk4Mn0.hN7b_UM8Ea5zIuh1q1hpbTdWouJr16STPgrzmiV-DyM";
+</script>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const supabase = createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+const BUCKET = "pdfsnotes";
+
+async function loadNotes(){
+  try{
+    const { data, error } = await supabase
+      .from("pdf")
+      .select("*")
+      .order("uploaded_at", { ascending: false });
+    if(error) throw error;
+    return data.map(row => ({
+      id: row.id,
+      uploaderName: row.uploader_name,
+      className: row.class_name,
+      subject: row.subject,
+      chapter: row.chapter,
+      fileUrl: row.file_url,
+      fileName: row.file_name,
+      uploadedAt: row.uploaded_at
+    }));
+  }catch(e){
+    console.error(e);
+    return [];
+  }
+}
+
+async function addNote(note, file){
+  const path = Date.now() + "-" + file.name;
+  const { error: uploadError } = await supabase.storage.from(BUCKET).upload(path, file);
+  if(uploadError) throw uploadError;
+  const { data: pub } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  const { error: insertError } = await supabase.from("pdf").insert({
+    uploader_name: note.uploaderName,
+    class_name: note.className,
+    subject: note.subject,
+    chapter: note.chapter,
+    file_url: pub.publicUrl,
+    file_name: file.name
+  });
+  if(insertError) throw insertError;
+  refreshRecycledCount();
+}
+
+async function refreshRecycledCount(){
+  const el = document.getElementById('recycledCount');
+  if(!el) return;
+  try{
+    const { count, error } = await supabase
+      .from("pdf")
+      .select("*", { count: "exact", head: true });
+    if(error) throw error;
+    el.textContent = count ?? 0;
+  }catch(e){
+    console.error(e);
+    el.textContent = "0";
+  }
+}
+
+document.querySelectorAll('nav button[data-page]').forEach(btn=>{
+  btn.addEventListener('click', ()=> goTo(btn.dataset.page));
+});
+document.querySelectorAll('.hero [data-page], .cta [data-page]').forEach(btn=>{
+  btn.addEventListener('click', ()=> goTo(btn.dataset.page));
+});
+function goTo(page){
+  document.querySelectorAll('nav button[data-page]').forEach(b=>b.classList.toggle('active', b.dataset.page===page));
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active', p.id===page));
+  if(page === 'search') renderResults();
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+let notesCache = [];
+
+function populateFilters(){
+  const classes = [...new Set(notesCache.map(n=>n.className).filter(Boolean))].sort();
+  const subjects = [...new Set(notesCache.map(n=>n.subject).filter(Boolean))].sort();
+  const classSel = document.getElementById('filterClass');
+  const subjSel = document.getElementById('filterSubject');
+  const curClass = classSel.value, curSubj = subjSel.value;
+  classSel.innerHTML = '<option value="">All classes</option>' + classes.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+  subjSel.innerHTML = '<option value="">All subjects</option>' + subjects.map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+  classSel.value = curClass; subjSel.value = curSubj;
+}
+
+async function renderResults(){
+  const container = document.getElementById('searchResults');
+  container.innerHTML = '<div class="empty">Loading notes...</div>';
+  notesCache = await loadNotes();
+  populateFilters();
+  drawResults();
+}
+
+function drawResults(){
+  const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+  const cls = document.getElementById('filterClass').value;
+  const subj = document.getElementById('filterSubject').value;
+  const container = document.getElementById('searchResults');
+
+  const filtered = notesCache.filter(n=>{
+    if(cls && n.className !== cls) return false;
+    if(subj && n.subject !== subj) return false;
+    if(!q) return true;
+    return [n.className, n.subject, n.chapter, n.uploaderName].filter(Boolean).some(v=>v.toLowerCase().includes(q));
+  });
+
+  if(filtered.length === 0){
+    container.innerHTML = '<div class="empty">No notes found yet' + (q||cls||subj ? ' matching your search' : '') + '. Be the first to contribute from the Contact page!</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(n=>`
+    <div class="note-card">
+      <div class="note-meta">
+        <span class="tag">${escapeHtml(n.className||'')}</span>
+        <span class="tag alt">${escapeHtml(n.subject||'')}</span>
+        <b>${escapeHtml(n.chapter||'Untitled notes')}</b>
+        <span>Uploaded by ${escapeHtml(n.uploaderName||'a student')}</span>
+      </div>
+      <a class="dl" href="${n.fileUrl}" target="_blank" rel="noopener">View / Download PDF →</a>
+    </div>
+  `).join('');
+}
+
+document.getElementById('searchInput').addEventListener('input', drawResults);
+document.getElementById('filterClass').addEventListener('change', drawResults);
+document.getElementById('filterSubject').addEventListener('change', drawResults);
+
+document.getElementById('uploadForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const msgEl = document.getElementById('formMsg');
+  msgEl.className = 'msg';
+  msgEl.textContent = '';
+
+  const uploaderName = document.getElementById('fName').value.trim();
+  const className = document.getElementById('fClass').value.trim();
+  const subject = document.getElementById('fSubject').value.trim();
+  const chapter = document.getElementById('fChapter').value.trim();
+  const file = document.getElementById('fFile').files[0];
+
+  if(!file){
+    msgEl.className = 'msg err';
+    msgEl.textContent = 'Please choose a PDF file.';
+    return;
+  }
+  if(file.size > 20 * 1024 * 1024){
+    msgEl.className = 'msg err';
+    msgEl.textContent = 'Please choose a PDF under 20MB.';
+    return;
+  }
+
+  msgEl.textContent = 'Uploading...';
+  try{
+    await addNote({ uploaderName, className, subject, chapter }, file);
+    msgEl.className = 'msg ok';
+    msgEl.textContent = 'Thank you! Your notes have been added to the archive. Please bring or send your physical notebook to us for recycling.';
+    e.target.reset();
+  }catch(err){
+    console.error(err);
+    msgEl.className = 'msg err';
+    msgEl.textContent = 'Upload failed: ' + (err.message || 'unknown error') + '. Check your Supabase table/bucket policies, then try again.';
+  }
+});
+
+renderResults();
+refreshRecycledCount();
+</script>
+</body>
+</html>
