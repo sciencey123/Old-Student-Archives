@@ -97,7 +97,7 @@ input[type=file]{padding:10px; border:1px dashed var(--line); border-radius:10px
       <h1>Turning old notebooks into shared knowledge</h1>
       <p>Old Student Archives collects handwritten notes from students' previous years' rough notebooks, scans them into searchable PDFs, and then responsibly recycles the physical notebooks — so the knowledge lives on and the paper doesn't go to waste.</p>
       <div class="stat-row">
-        <div class="stat"><b id="recycledCount">—</b>notebooks recycled so far</div>
+        <div class="stat"><b id="recycledCount">—</b>committed recycling notebooks</div>
         <div class="stat"><b>♻︎</b>paper recycled after scanning</div>
         <div class="stat"><b>📚</b>notes searchable by class, subject &amp; chapter</div>
       </div>
@@ -155,11 +155,39 @@ input[type=file]{padding:10px; border:1px dashed var(--line); border-radius:10px
       <div class="two-col">
         <div>
           <label>Enter the class of your notes</label>
-          <input type="text" id="fClass" placeholder="e.g. Class 10 — the class this topic was studied in, not your current class" required>
+          <select class="form-select" id="fClass" required>
+            <option value="" disabled selected>Select class</option>
+            <option value="Class 9">Class 9</option>
+            <option value="Class 10">Class 10</option>
+            <option value="Class 11">Class 11</option>
+            <option value="Class 12">Class 12</option>
+          </select>
         </div>
         <div>
           <label>Subject</label>
-          <input type="text" id="fSubject" placeholder="e.g. Physics" required>
+          <select class="form-select" id="fSubject" required>
+            <option value="" disabled selected>Select subject</option>
+            <option>Science</option>
+            <option>Physics</option>
+            <option>Chemistry</option>
+            <option>Biology</option>
+            <option>Mathematics</option>
+            <option>English</option>
+            <option>Hindi</option>
+            <option>Sanskrit</option>
+            <option>Social Studies</option>
+            <option>History</option>
+            <option>Geography</option>
+            <option>Political Science</option>
+            <option>Economics</option>
+            <option>Accountancy</option>
+            <option>Business Studies</option>
+            <option>Informatics Practices</option>
+            <option>Computer Science</option>
+            <option>AI</option>
+            <option value="Other">Other</option>
+          </select>
+          <input type="text" id="fSubjectOther" placeholder="Enter subject name" style="margin-top:8px; display:none;">
         </div>
       </div>
       <div>
@@ -320,6 +348,12 @@ document.getElementById('searchInput').addEventListener('input', drawResults);
 document.getElementById('filterClass').addEventListener('change', drawResults);
 document.getElementById('filterSubject').addEventListener('change', drawResults);
 
+document.getElementById('fSubject').addEventListener('change', (e)=>{
+  const otherBox = document.getElementById('fSubjectOther');
+  otherBox.style.display = e.target.value === 'Other' ? 'block' : 'none';
+  if(e.target.value === 'Other') otherBox.focus();
+});
+
 document.getElementById('uploadForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
   const msgEl = document.getElementById('formMsg');
@@ -328,7 +362,10 @@ document.getElementById('uploadForm').addEventListener('submit', async (e)=>{
 
   const uploaderName = document.getElementById('fName').value.trim();
   const className = document.getElementById('fClass').value.trim();
-  const subject = document.getElementById('fSubject').value.trim();
+  const subjectSelect = document.getElementById('fSubject').value.trim();
+  const subject = subjectSelect === 'Other'
+    ? document.getElementById('fSubjectOther').value.trim()
+    : subjectSelect;
   const chapter = document.getElementById('fChapter').value.trim();
   const file = document.getElementById('fFile').files[0];
 
@@ -349,6 +386,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (e)=>{
     msgEl.className = 'msg ok';
     msgEl.textContent = 'Thank you! Your notes have been added to the archive. Please bring or send your physical notebook to us for recycling.';
     e.target.reset();
+    document.getElementById('fSubjectOther').style.display = 'none';
   }catch(err){
     console.error(err);
     msgEl.className = 'msg err';
