@@ -294,14 +294,16 @@ function escapeHtml(s){
 
 let notesCache = [];
 
+const CLASS_OPTIONS = ["Class 9","Class 10","Class 11","Class 12"];
+const SUBJECT_OPTIONS = ["Science","Physics","Chemistry","Biology","Mathematics","English","Hindi","Sanskrit","Social Studies","History","Geography","Political Science","Economics","Accountancy","Business Studies","Informatics Practices","Computer Science","AI"];
+
 function populateFilters(){
-  const classes = [...new Set(notesCache.map(n=>n.className).filter(Boolean))].sort();
-  const subjects = [...new Set(notesCache.map(n=>n.subject).filter(Boolean))].sort();
   const classSel = document.getElementById('filterClass');
   const subjSel = document.getElementById('filterSubject');
   const curClass = classSel.value, curSubj = subjSel.value;
-  classSel.innerHTML = '<option value="">All classes</option>' + classes.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-  subjSel.innerHTML = '<option value="">All subjects</option>' + subjects.map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+  classSel.innerHTML = '<option value="">All classes</option>' + CLASS_OPTIONS.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+  subjSel.innerHTML = '<option value="">All subjects</option>' + SUBJECT_OPTIONS.map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('')
+    + '<option value="__other__">Other</option>';
   classSel.value = curClass; subjSel.value = curSubj;
 }
 
@@ -321,7 +323,11 @@ function drawResults(){
 
   const filtered = notesCache.filter(n=>{
     if(cls && n.className !== cls) return false;
-    if(subj && n.subject !== subj) return false;
+    if(subj === '__other__'){
+      if(SUBJECT_OPTIONS.includes(n.subject)) return false;
+    } else if(subj && n.subject !== subj){
+      return false;
+    }
     if(!q) return true;
     return [n.className, n.subject, n.chapter, n.uploaderName].filter(Boolean).some(v=>v.toLowerCase().includes(q));
   });
